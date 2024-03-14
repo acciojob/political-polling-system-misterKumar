@@ -12,6 +12,42 @@ public class PoliticalPollingSystem {
 
     public void castVote(String party) {
     	//your code goes here
+        try {
+            // Create URL object
+            URL url = new URL(API_ENDPOINT);
+
+            // Create connection object
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Set request method
+            connection.setRequestMethod("POST");
+
+            // Set content type
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            // Enable input/output streams
+            connection.setDoOutput(true);
+
+            // Construct JSON payload
+            String jsonInputString = "{\"party\": \"" + party + "\"}";
+
+            // Write JSON payload to connection output stream
+            connection.getOutputStream().write(jsonInputString.getBytes());
+
+            // Get response code
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Vote successfully recorded for party: " + party);
+            } else {
+                System.err.println("Failed to record vote. Server returned HTTP error code: " + responseCode);
+            }
+
+            // Close connection
+            connection.disconnect();
+        } catch (IOException e) {
+            System.err.println("Error while connecting to API: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
